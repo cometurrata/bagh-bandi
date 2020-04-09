@@ -86,8 +86,8 @@ class Engine:
             return True
 
         elif board.turn == "tigers":
-            if self.is_valid_multi_capture(departure, destination, board):
-                return True
+            if len(self.action_history) > 0 and self.action_history[-1].get_is_a_capture():
+                return self.is_valid_multi_capture(departure, destination, board)
             elif self.is_valid_tiger_move(departure, destination, board):
                 return True
             elif self.is_valid_tiger_capture(departure, destination, board):

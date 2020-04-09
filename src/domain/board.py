@@ -26,10 +26,10 @@ class Board:
     }
 
     def __init__(self):
-        self.tigerPositions = [8, 17]
+        self.tigerPositions = [7, 17]
         self.goatsPositions = [1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 11, 11, 11, 11, 11, 13, 13, 13, 13, 13]
         self.dead_goats = 0
-        self.turn = "tigers"
+        self.turn = "goats"
         self.action_history = []
 
 

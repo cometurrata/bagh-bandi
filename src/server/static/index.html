@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Hello Web - Controlling Processing from JavaScript</title>
+</head>
+
+<body>
+
+    <script src="processing.min.js"></script>
+    <script type="application/processing" data-processing-target="pjs">
+        // Global variables||
+        float radius = 50.0;
+
+        int goats[25] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+        int tigers[25] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+
+        int selected_empty_space = -1;
+        int selected_tiger = -1;
+        int selected_goat = -1;
+
+        int board_width_unit = 0;
+
+        // Setup the Processing Canvas
+        void setup(){
+        size( 500, 500 );
+        strokeWeight( 10 );
+        frameRate( 15 );
+        X = width / 2;
+        Y = height / 2;
+        board_width_unit =  (width - (2 * 30)) / 4;
+        }
+
+        // Main draw loop
+        void draw(){
+
+
+        // Fill canvas grey
+        background( 100 );
+
+        strokeWeight( 3);
+        stroke(255);
+        line(30, 30 , (500 - 30), (500 - 30)); // Diag top-left/bottom-right
+        line((500 - 30), 30 , 30,  (500 - 30)); // Diag top-right/bottom-left
+        line( (500 - 30), 30, 30, 30 ); // Top
+        line( 30, (500 - 30), 30, 30 ); // left
+        line( 30, (500 - 30), (500 - 30), (500 - 30) ); // bottom
+        line( (500 - 30), (500 - 30), (500 - 30), 30 ); // Right
+
+        line( 30, width/2 , (500 - 30), width/2 ); // middle
+        line( width/2 , 30,width/2, (500 - 30) );
+
+        line( 30, 30 + board_width_unit , (500 - 30), 30 + board_width_unit );
+        line( 30, 30 + 3 * board_width_unit , (500 - 30), 30 + 3 * board_width_unit );
+
+        line( 30 + board_width_unit , 30 ,  30 + board_width_unit, (500 - 30) );
+        line( 30 + 3 * board_width_unit , 30 ,  30 + 3 * board_width_unit, (500 - 30) );
+
+        line( 30 + (2 * board_width_unit) , 30 , 30,  30 + (2 * board_width_unit) );
+        line( 30, 30 + (2 * board_width_unit) , 30 + (2 * board_width_unit), 500 - 30 );
+        line( 30 + (2 * board_width_unit), 500 - 30 , 500 - 30, 30 + (2 * board_width_unit) );
+        line( 500 - 30, 30 + (2 * board_width_unit), 30 + (2 * board_width_unit), 30 );
+
+        if (state == "")
+        {
+            return;
+        }
+
+        fill(255);
+        font = loadFont("Bold");
+        textFont(font);
+        textSize(24);
+
+        for (int i = 0; i < goats.length; i++) {
+            goats[i] = 0;
+            tigers[i] = 0;
+        }
+        for (int i = 0; i < goatPositions.length; i++)
+        {
+            goats[goatPositions[i]]++;
+        }
+
+        for (int i = 0; i < tigerPositions.length; i++)
+        {
+            tigers[tigerPositions[i]]++;
+        }
+
+
+        int X, Y;
+
+        for (int i = 0; i < 25; i++)
+        {
+
+            // Set fill-color to blue
+            fill( 0, 121, 184 );
+            // Set stroke-color white
+            stroke(255);
+
+            if (goats[i] > 0)
+            {
+
+                if (selected_goat == i)
+                {
+                    // Set stroke-color Green
+                    stroke(0, 255, 0 );
+                }
+                else
+                {
+                    // Set stroke-color white
+                    stroke(255);
+                }
+
+                X = 30 + ((i % 5) *board_width_unit);
+                Y = 30 + ((int)(i / 5) * board_width_unit);
+                ellipse( X, Y, radius, radius );
+
+                if (goats[i] > 1)
+                {
+                    fill(255);
+                    textAlign(CENTER, CENTER);
+                    text(goats[i], X, Y);
+                }
+            }
+
+            // Set fill-color to blue
+            fill( 184, 30 , 0 );
+            if (tigers[i] > 0 )
+            {
+
+                if (selected_tiger == i)
+                {
+                    // Set stroke-color Green
+                    stroke(0, 255, 0 );
+                }
+                else
+                {
+                    // Set stroke-color white
+                    stroke(255);
+                }
+
+                X = 30 + ((i % 5) *board_width_unit);
+                Y = 30 + ((int)(i / 5) * board_width_unit);
+                ellipse( X, Y, radius, radius );
+            }
+        }
+    }
+
+
+    void mouseClicked() {
+
+        for (int i = 0; i < 25; i++)
+        {
+            int X = 30 + ((i % 5) *board_width_unit);
+            int Y = 30 + ((int)(i / 5) * board_width_unit);
+
+            if (dist(X, Y, mouseX,mouseY) <= 25)
+            {
+                if (goats[i] > 0)
+                {
+                    selected_empty_space = -1;
+                    selected_goat = i;
+                    selected_tiger = -1;
+                    return;
+                }
+                if (tigers[i] > 0)
+                {
+                    selected_empty_space = -1;
+                    selected_tiger = i;
+                    selected_goat = -1;
+                    return;
+                }
+                else
+                {
+                    selected_empty_space = i;
+
+                    if (selected_tiger > 0)
+                    {
+                        sendMove(selected_tiger, selected_empty_space);
+                    }
+                    if (selected_goat > 0)
+                    {
+                        sendMove(selected_goat, selected_empty_space);
+                    }
+                    break;
+                }
+            }
+        }
+
+        selected_empty_space = -1;
+        selected_tiger = -1;
+        selected_goat = -1;
+  }
+    </script>
+    <canvas id="pjs"> </canvas></body>
+
+<select id="player_type">
+    <option>tigers</option>
+    <option>goats</option>
+</select>
+
+<button onclick="skip()" id="skip">Skip Turn</button>
+
+<div id="msg">
+</div>
+
+<script>
+    var state = "";
+    var goatPositions = [];
+    var tigerPositions = [];
+    var re_capture_allowed = false;
+    var state = "";
+    var turn = "";
+
+    async function fetchAsync(url) {
+
+        let response = await fetch(url);
+        let data = await response.json();
+
+        return data;
+    }
+
+    async function move(departure, destination) {
+        var url = window.location.origin + "/move/" + document.getElementById("player_type").value + "/" + departure + "/" + destination;
+        let response = await fetch(url);
+        let data = await response.json();
+        return data;
+    }
+
+
+    var printMessage = function (msg) {
+        document.getElementById('msg').innerHTML = "Message: " + msg;
+    };
+
+    async function sendSkipRequest() {
+        var url = window.location.origin + "/skip/" + document.getElementById("player_type").value;
+        let response = await fetch(url);
+        let data = await response.json();
+        return data;
+    }
+
+    async function skip() {
+        sendSkipRequest()
+            .then(data => setState(data))
+            .catch(reason => console.log(reason.message))
+    }
+
+    var sendMove = function (departure, destination) {
+        move(departure, destination)
+            .then(data => setState(data))
+            .catch(reason => console.log(reason.message));
+    };
+
+    function getCookie(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    }
+
+    function setState(data) {
+        state = JSON.stringify(data);
+        goatPositions = data["goat_positions"];
+        tigerPositions = data["tigers_positions"];
+        re_capture_allowed = data["re_capture_allowed"];
+        turn = data["turn"];
+
+
+        if (re_capture_allowed) {
+            document.getElementById("skip").style.visibility = "visible"
+        }
+        else {
+            document.getElementById("skip").style.visibility = "hidden"
+        }
+
+        printMessage("Turn to " + turn);
+
+    }
+
+    var tigerPositions = [];
+    var goatPositions = [];
+    fetchAsync(window.location.origin + "/state")
+        .then(data => setState(data))
+        .catch(reason => console.log(reason.message))
+
+
+    window.setInterval(function () {
+        fetchAsync(window.location.origin + "/state")
+            .then(data => setState(data))
+            .catch(reason => console.log(reason.message))
+    }, 1000);
+
+
+</script>
+
+
+</html>
