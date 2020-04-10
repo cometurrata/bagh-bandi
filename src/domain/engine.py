@@ -6,6 +6,7 @@ class Engine:
     def __init__(self):
         self.board = Board()
         self.re_capture_allowed = False
+        self.action_history = []
 
     def take_action(self, action, board, is_action_of_game):
         self.re_capture_allowed = False

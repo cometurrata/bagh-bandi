@@ -89,6 +89,12 @@ def move_agent():
     agent.moves()
     return buildResponse()
 
+@app.route('/run_agent/<agent_type>', methods=['GET', 'POST'])
+def run_agent(agent_type):
+    global agent
+    agent = MinimaxABAgent(agent_type, engine)
+    agent.moves()
+    return buildResponse()
 
 def main():
     app.run(host='0.0.0.0', port=5000)

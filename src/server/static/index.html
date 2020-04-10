@@ -199,6 +199,7 @@
 </select>
 
 <button onclick="skip()" id="skip">Skip Turn</button>
+<button onclick="runAgentAsync()" id="runAgent">Run Agent</button>
 
 <div id="msg">
 </div>
@@ -250,21 +251,6 @@
             .catch(reason => console.log(reason.message));
     };
 
-    function getCookie(cname) {
-        var name = cname + "=";
-        var ca = document.cookie.split(';');
-        for (var i = 0; i < ca.length; i++) {
-            var c = ca[i];
-            while (c.charAt(0) == ' ') {
-                c = c.substring(1);
-            }
-            if (c.indexOf(name) == 0) {
-                return c.substring(name.length, c.length);
-            }
-        }
-        return "";
-    }
-
     function setState(data) {
         state = JSON.stringify(data);
         goatPositions = data["goat_positions"];
@@ -297,6 +283,13 @@
             .catch(reason => console.log(reason.message))
     }, 1000);
 
+    async function runAgentAsync() {
+        var url = window.location.origin + "/run_agent/" + turn;
+        let response = await fetch(url);
+        let answer = await response.json();
+        answer.then(data => setState(data))
+            .catch(reason => console.log(reason.message))
+    }
 
 </script>
 
