@@ -21,15 +21,28 @@ class Agent(object):
                     all_possible_actions[capture] += list_capture_moves_to_add
         else:
             all_possible_actions = state.get_goats_available_moves()
-        for dep in all_possible_actions:
+        all_possible_actions = self.remove_invalid_actions(all_possible_actions, state)
+        all_possible_actions = self.remove_duplicate_actions(all_possible_actions)
+        return all_possible_actions
+
+    def remove_invalid_actions(self, list_of_actions, state):
+        for dep in list_of_actions:
             list_moves_to_remove = []
-            for dest in all_possible_actions[dep]:
+            for dest in list_of_actions[dep]:
                 is_valid = self.engine.is_valid_move(dep, dest, state)
                 if not is_valid:
                     list_moves_to_remove.append(dest)
             for move in list_moves_to_remove:
-                all_possible_actions[dep].remove(move)
-        return all_possible_actions
+                list_of_actions[dep].remove(move)
+        return list_of_actions
+
+    @staticmethod
+    def remove_duplicate_actions(list_of_actions):
+        for dep in list_of_actions:
+            dedup_set_of_actions = set(list_of_actions[dep])
+            list_of_actions[dep] = list(dedup_set_of_actions)
+        return list_of_actions
+
 
     def set_tuples_possible_action(self, possible_actions):
         tuples_possible_action = []

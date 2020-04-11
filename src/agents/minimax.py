@@ -8,7 +8,7 @@ class MinimaxABAgent(Agent):
     """
         Minimax agent with Alpha Beta Pruning inspired from https://github.com/haryoa/evo-pawness/blob/master/ai_modules/classic_algorithm.py
     """
-    def __init__(self, agent_type, engine, max_depth=2):
+    def __init__(self, agent_type, engine, max_depth=4):
         """
         Initiation
         Parameters
