@@ -8,7 +8,7 @@ class MinimaxABAgent(Agent):
     """
         Minimax agent with Alpha Beta Pruning inspired from https://github.com/haryoa/evo-pawness/blob/master/ai_modules/classic_algorithm.py
     """
-    def __init__(self, agent_type, engine, max_depth=1):
+    def __init__(self, agent_type, engine, max_depth=2):
         """
         Initiation
         Parameters
@@ -29,8 +29,16 @@ class MinimaxABAgent(Agent):
         pass
 
     def moves(self):
-        departure, destination = self.choose_action(self.engine.board)
-        self.engine.board = self.engine.move(departure, destination, self.engine.board)
+        tuple_move = self.choose_action(self.engine.board)
+        if self.engine.board.terminal_test():
+            pass
+        elif not tuple_move:  # has no possible move
+            if self.engine.board.turn == 'tigers':
+                self.engine.skip_tiger_recapture()
+            else:
+                self.engine.skip_goat_turn()
+        else:
+            self.engine.board = self.engine.move(tuple_move[0], tuple_move[1], self.engine.board)
 
     def choose_action(self, state):
         """
@@ -52,10 +60,10 @@ class MinimaxABAgent(Agent):
         print("MINIMAX AB : Wait AI is choosing")
         # list_action = self.get_possible_action(state)
         eval_score, selected_action_tuple = self._minimax(0, state, True, float('-inf'), float('inf'))
-        print("MINIMAX : Done, eval = %d, expanded %d" % (eval_score, self.node_expanded))
+        print("MINIMAX : Done, eval = %.2f, expanded %d" % (eval_score, self.node_expanded))
         print("--- %s seconds ---" % (time.time() - start_time))
 
-        return selected_action_tuple[0], selected_action_tuple[1]
+        return selected_action_tuple
 
     def _minimax(self, current_depth, state, is_max_turn, alpha, beta):
         """

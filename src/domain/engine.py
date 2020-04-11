@@ -6,7 +6,6 @@ class Engine:
     def __init__(self):
         self.board = Board()
         self.re_capture_allowed = False
-        self.action_history = []
 
     def take_action(self, action, board, is_action_of_game):
         self.re_capture_allowed = False
@@ -87,7 +86,7 @@ class Engine:
             return True
 
         elif board.turn == "tigers":
-            if len(self.action_history) > 0 and self.action_history[-1].get_is_a_capture():
+            if len(board.action_history) > 0 and board.action_history[-1].get_is_a_capture():
                 return self.is_valid_multi_capture(departure, destination, board)
             elif self.is_valid_tiger_move(departure, destination, board):
                 return True
@@ -113,6 +112,9 @@ class Engine:
         if self.re_capture_allowed:
             self.re_capture_allowed = False
             self.board.turn = "goats"
+
+    def skip_goat_turn(self):
+        self.board.turn = "tigers"
 
 
 

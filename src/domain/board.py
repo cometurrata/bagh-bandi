@@ -92,7 +92,7 @@ class Board:
         :rtype:string
         """
 
-        if self.dead_goats >= 5:
+        if self.dead_goats >= 6:
             return "tigers"
 
         if self.turn == "tigers":
