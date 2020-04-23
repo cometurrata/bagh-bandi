@@ -71,7 +71,7 @@ def skip_turn(player_type):
         engine.skip_tiger_recapture()
         if agent and engine.board.turn != player_type:
             agent.moves()
-        msg =  "OK"
+        msg = "OK"
     else:
         msg = "Cannot skip turn"
 
@@ -89,6 +89,12 @@ def move_agent():
     agent.moves()
     return buildResponse()
 
+@app.route('/run_agent/<agent_type>', methods=['GET', 'POST'])
+def run_agent(agent_type):
+    global agent, engine
+    agent = MinimaxABAgent(agent_type, engine)
+    agent.moves()
+    return buildResponse()
 
 def main():
     app.run(host='0.0.0.0', port=5000)
