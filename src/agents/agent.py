@@ -4,6 +4,15 @@ class Agent(object):
     """docstring for Agent."""
 
     def __init__(self, agent_type, engine):
+        """
+        Initiation
+        Parameters
+        ----------
+        agent_type : string
+            goat or tiger
+        engine : Engine
+            engine gives the agent the rules of the environment
+        """
         super(Agent, self).__init__()
         self.agent_type = agent_type
         self.engine = engine

@@ -6,12 +6,12 @@ FROM $BASE_CONTAINER
 LABEL maintainer="Jupyter Project <jupyter@googlegroups.com>"
 
 # Install Tensorflow
-# RUN conda install --quiet --yes \
-#     'tensorflow=1.12*' \
-#     'keras=2.2*' && \
-#     conda clean -tipsy && \
-#     fix-permissions $CONDA_DIR && \
-#     fix-permissions /home/$NB_USER
+RUN conda install --quiet --yes \
+    'tensorflow=1.12*' \
+    'keras=2.2*' && \
+    conda clean -tipsy && \
+    fix-permissions $CONDA_DIR && \
+    fix-permissions /home/$NB_USER
 
 RUN pip install tqdm==4.31.1
 RUN pip install xgboost==0.82
@@ -32,6 +32,10 @@ RUN pip install Flask-GraphQL==1.4.1
 RUN pip install gunicorn==19.7.1
 RUN pip install Flask-JWT==0.3.2
 RUN pip install Flask-RESTful==0.3.6
+RUN pip install torch==1.5.0
+RUN pip install torchvision==0.6.0
+RUN pip install gym==0.17.2
+
 
 
 USER root
